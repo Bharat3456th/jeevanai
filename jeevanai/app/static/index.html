@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" data-t="indigo"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JeevanAI</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%234f46e5'/%3E%3Cpath d='M32 50C20 44 16 32 20 20c10 0 18 4 20 14-2 8-4 12-8 16z' fill='%23fff'/%3E%3C/svg%3E">
+<style>
+:root{--bg:#f4f5fb;--card:#fff;--tx:#1d2433;--mu:#667085;--bd:#e3e6ee;--ac:#4f46e5;--ac2:#10b981;--ok:#16a34a;--wa:#d97706;--er:#dc2626}
+@media(prefers-color-scheme:dark){:root{--bg:#0f121a;--card:#171b26;--tx:#e8ebf2;--mu:#98a2b3;--bd:#2a3040;--ac:#818cf8}}
+html[data-t=emerald]{--ac:#10b981;--ac2:#06b6d4}html[data-t=orange]{--ac:#f97316;--ac2:#eab308}
+html[data-t=pink]{--ac:#ec4899;--ac2:#a855f7}html[data-t=sky]{--ac:#0ea5e9;--ac2:#6366f1}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;font-family:system-ui,Segoe UI,sans-serif;color:var(--tx);min-height:100vh;
+ background:radial-gradient(900px 380px at 8% -8%,color-mix(in srgb,var(--ac) 22%,transparent),transparent),radial-gradient(700px 320px at 100% 0,color-mix(in srgb,var(--ac2) 18%,transparent),transparent),var(--bg)}
+.goog-te-banner-frame,.goog-te-gadget,#goog-gt-tt,.goog-tooltip,iframe.skiptranslate{display:none!important}
+body{top:0!important}.goog-text-highlight{background:none!important;box-shadow:none!important}
+.brand{display:flex;align-items:center;gap:10px;font-size:21px;font-weight:700}.brand span{color:var(--ac)}
+.logo{width:38px;height:38px;flex:none}
+.right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px;color:var(--mu)}
+.tools{display:flex;gap:6px;align-items:center}.tools select{width:auto;margin:0;padding:5px 6px}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--card);outline:1px solid var(--bd);cursor:pointer;padding:0}
+main{max-width:1000px;margin:20px auto;padding:0 20px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+#run>.card{border-left:5px solid var(--ag,var(--ac))}
+label{display:block;font-size:13px;color:var(--mu);margin:10px 0 0}
+input,select,textarea{width:100%;margin-top:4px;padding:9px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+.row{display:flex;gap:12px;flex-wrap:wrap}.row>*{flex:1;min-width:200px}
+button.pr{margin-top:14px;padding:10px 20px;border:0;border-radius:10px;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;font-size:15px;cursor:pointer}
+button.pr:disabled{opacity:.6}
+button.sm{padding:5px 10px;border-radius:6px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer}
+.badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;background:var(--bd);color:var(--tx)}
+.badge.allowed,.badge.approved,.badge.completed{background:var(--ok);color:#fff}
+.badge.approval_required,.badge.pending{background:var(--wa);color:#fff}
+.badge.blocked,.badge.failed,.badge.error,.badge.rejected{background:var(--er);color:#fff}
+.resp{white-space:pre-wrap;line-height:1.55}pre{background:var(--bg);padding:10px;border-radius:8px;overflow:auto;font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{text-align:left;padding:8px 6px;border-bottom:1px solid var(--bd)}
+.err{color:var(--er)}.mu{color:var(--mu);font-size:13px}.pane{display:none}.pane.on{display:block}
+#auth{max-width:380px;margin:50px auto;padding:0 16px;text-align:center}#auth .card{text-align:left}
+#auth .logo{width:72px;height:72px;margin:0 auto 6px;display:block}#auth h1{text-align:center;margin:0 0 4px;font-size:28px}#auth h1 span{color:var(--ac)}
+.tabs{display:flex;gap:8px;margin:10px 0 6px}.tabs button{flex:1}
+.pw{position:relative;margin-top:4px}.pw input{margin-top:0;padding-right:46px}
+.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;font-size:18px;cursor:pointer;padding:4px 8px;color:var(--mu)}
+.avatar{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;font-size:12px;font-weight:700;margin-right:6px;flex:none}
+.avatar.big{width:58px;height:58px;font-size:21px;margin:0}.me{display:inline-flex;align-items:center}
+.badge.admin{background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff}
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:13px}.chk input{width:auto;margin-top:3px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;border-top:4px solid var(--c,var(--ac))}.stat b{display:block;font-size:26px}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:14px;z-index:9}
+
+/* ===== sidebar layout ===== */
+#app{min-height:100vh}
+.side{position:fixed;inset:0 auto 0 0;width:250px;background:var(--card);border-right:1px solid var(--bd);display:flex;flex-direction:column;z-index:20;transition:transform .2s}
+.side .brand{padding:18px 18px 14px;border-bottom:1px solid var(--bd)}
+.navwrap{flex:1;overflow-y:auto;padding:8px 12px}.side nav{display:flex;flex-direction:column;gap:2px}
+.nl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);padding:14px 10px 6px;opacity:.85}
+.nl:first-child{padding-top:8px}
+nav button,.navbtn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:none;border:0;padding:10px 12px;border-radius:10px;color:var(--mu);cursor:pointer;font-size:14.5px;font-weight:500}
+nav button:hover,.navbtn:hover{background:color-mix(in srgb,var(--ac) 10%,transparent);color:var(--tx)}
+nav button.on{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;box-shadow:0 4px 12px color-mix(in srgb,var(--ac) 35%,transparent)}
+nav button .ic,.navbtn .ic{width:19px;height:19px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+nav button span{pointer-events:none}
+.lo{margin-top:10px;padding-top:10px;border-top:1px solid var(--bd)}
+.navlogout:hover{color:var(--er)!important;background:color-mix(in srgb,var(--er) 10%,transparent)!important}
+/* admin page: ek hi gray colour (yahan badlo) */
+:root{--adm:#8a93a6}
+#aStats .stat{--c:var(--adm)!important}
+/* language: sirf login/register form me | colours: sirf dashboard header me */
+.langSel{display:none!important}
+#auth .langSel{display:block!important}
+#auth .tools{display:block}
+#auth .tools select{width:100%;margin:4px 0 0;padding:9px 10px}
+#auth .dot{display:none}
+.sidefoot{padding:12px;border-top:1px solid var(--bd);display:flex;flex-direction:column;gap:8px}
+.usercard{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:12px;padding:8px 10px;cursor:pointer}
+.usercard .avatar{margin:0;width:34px;height:34px;font-size:13px}
+.uinfo{display:flex;flex-direction:column;gap:3px;min-width:0;align-items:flex-start}
+.uinfo #who{font-size:14px;font-weight:600;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sidefoot .sm{width:100%;padding:8px}
+.content{margin-left:250px;min-height:100vh}
+.top{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--bd)}
+.top h2{margin:0;font-size:19px}
+.top .left{display:flex;align-items:center;gap:10px}
+.burger{display:none;font-size:18px;line-height:1}
+.scrim{display:none}
+@media(max-width:860px){
+ .side{transform:translateX(-100%)}body.menu .side{transform:none;box-shadow:0 0 40px rgba(0,0,0,.35)}
+ .content{margin-left:0}.burger{display:inline-block}
+ body.menu .scrim{display:block;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:15}
+ .top{padding:10px 12px}.top h2{font-size:16px;white-space:nowrap}.top .tools .dot{display:none}.top .tools select{max-width:96px}.top .right{flex-wrap:nowrap}
+}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs>
+<symbol id="logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="url(#lg)"/>
+<path d="M32 50C20 44 16 32 20 20c10 0 18 4 20 14-2 8-4 12-8 16z" fill="#fff" opacity=".96"/>
+<path d="M32 50c0-10 2-18 10-26" stroke="#6366f1" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+<path d="M47 12l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#fde68a"/></symbol></svg>
+<div id="gte" style="display:none"></div>
+
+<div id="auth"><svg class="logo"><use href="#logo"/></svg>
+ <h1 class="notranslate" translate="no">Jeevan<span>AI</span></h1><p class="mu">Study &middot; Career &middot; Documents &middot; Shopping</p>
+ <div class="card">
+ <div class="tabs"><button class="sm" id="tLogin">Login</button><button class="sm" id="tReg">Register</button></div>
+ <label class="regOnly" hidden>Full name<input id="aName" autocomplete="name"></label>
+ <label>Email<input id="aEmail" type="email" autocomplete="email"></label>
+ <div class="regOnly" hidden>
+  <label>Mobile number (India)<input id="aPhone" type="tel" inputmode="numeric" placeholder="9876543210" autocomplete="tel"></label>
+  <div class="row"><label>State / UT<select id="aState"></select></label><label>City / District<input id="aCity" autocomplete="address-level2"></label></div>
+  <div class="row"><label>I am a<select id="aOcc"></select></label><label>Date of birth<input id="aDob" type="date"></label></div>
+ </div>
+ <label class="regOnly" hidden>Language<div class="tools"></div></label>
+ <label>Password (min 8 characters)<div class="pw"><input id="aPass" type="password" autocomplete="current-password"><button type="button" class="eye" id="eye" title="Show / Hide password" aria-label="Show or hide password">&#128065;</button></div></label>
+ <label class="regOnly chk" hidden><input type="checkbox" id="aTerms"> I confirm my details are correct and I will use JeevanAI responsibly.</label>
+ <button class="pr" id="aGo" style="width:100%">Login</button><p class="err" id="aErr"></p></div></div>
+
+<div id="app" hidden>
+<aside class="side" id="side"><div class="brand"><svg class="logo"><use href="#logo"/></svg><div class="notranslate" translate="no">Jeevan<span>AI</span></div></div>
+ <div class="navwrap"><nav id="nav"></nav>
+  <div class="lo"><button class="navbtn navlogout" id="logout"><svg class="ic" viewBox="0 0 24 24"><path d="M9 4H6a2 2 0 00-2 2v12a2 2 0 002 2h3"/><path d="M16 8l4 4-4 4M20 12H9"/></svg><span>Logout</span></button></div></div>
+ <div class="sidefoot"><button class="usercard" id="meBtn" title="My profile"><span class="avatar" id="av"></span><span class="uinfo"><span id="who"></span><span class="badge admin" id="roleB" hidden>Admin</span></span></button></div></aside>
+<div class="scrim" id="scrim"></div>
+<div class="content"><header class="top"><div class="left"><button class="sm burger" id="burger" aria-label="Menu">&#9776;</button><h2 id="pageTitle">Run agent</h2></div>
+ <div class="right"><div class="tools"></div><button class="sm" id="bell" title="Alerts">&#128276; <span id="nb">0</span></button></div></header>
+<main>
+<div id="run" class="pane on"><div class="card" id="cpBanner" hidden><b>Complete your profile</b><p class="mu">Please add your mobile number, state, city and date of birth.</p><button class="sm" id="cpGo">Open profile</button></div><div class="card">
+ <div class="row"><label>Agent<select id="agent"></select></label><label>Action<select id="action"></select></label></div>
+ <p class="mu" id="adesc"></p><div id="fields"></div>
+ <button class="pr" id="go">Run</button></div>
+ <div class="card" id="out" hidden></div></div>
+<div id="approvals" class="pane"><div class="card" id="apList"></div><div class="card" id="apOut" hidden></div></div>
+<div id="perms" class="pane"><div class="card" id="pList"></div><button class="sm" id="resetP">Reset to defaults</button></div>
+<div id="activity" class="pane"><div class="card" id="acList"></div></div>
+<div id="docs" class="pane"><div class="card"><input type="file" id="file" accept=".pdf,.txt,.md"><button class="pr" id="up">Upload</button><p class="err" id="upErr"></p></div><div class="card" id="dList"></div></div>
+<div id="products" class="pane"><div class="card"><b>Track a product</b>
+ <div class="row"><label>Product URL<input id="pUrl"></label><label>Name (optional)<input id="pName"></label><label>Target price (optional)<input id="pTarget" type="number"></label></div>
+ <button class="pr" id="pAdd">Track</button><p class="mu" id="pMsg"></p></div><div class="card" id="prList"></div></div>
+<div id="alerts" class="pane"><div class="card" id="nList"></div><button class="sm" id="readAll">Mark all read</button></div>
+<div id="profile" class="pane">
+ <div class="card" id="pHead"></div>
+ <div class="card"><b>Edit profile</b>
+  <div class="row"><label>Full name<input id="prName"></label><label>Mobile number<input id="prPhone" type="tel"></label></div>
+  <div class="row"><label>State / UT<select id="prState"></select></label><label>City / District<input id="prCity"></label></div>
+  <div class="row"><label>I am a<select id="prOcc"></select></label><label>Date of birth<input id="prDob" type="date"></label></div>
+  <button class="pr" id="prSave">Save changes</button><p class="mu" id="prMsg"></p></div>
+ <div class="card"><b>Change password</b>
+  <div class="row"><label>Old password<input id="cpOld" type="password" autocomplete="current-password"></label><label>New password (min 8)<input id="cpNew" type="password" autocomplete="new-password"></label></div>
+  <button class="pr" id="cpSave">Change password</button><p class="mu" id="cpMsg"></p></div></div>
+<div id="admin" class="pane"><div class="grid" id="aStats"></div><div class="card" id="aStates"></div><div class="card" id="aCats"></div><div class="card" style="overflow-x:auto" id="aUsers"></div></div>
+</main></div></div>
+<div id="toast" hidden></div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ROLES=["backend developer","frontend developer","data analyst","data scientist","ml engineer","devops engineer"];
+const ICON={study:'\u{1F4DA}',career:'\u{1F4BC}',document:'\u{1F4C4}',shopping:'\u{1F6D2}'};
+const AGC={study:'#6366f1',career:'#10b981',document:'#f59e0b',shopping:'#ec4899'};
+const LANGS=[['en','English'],['hi','हिन्दी'],['bn','বাংলা'],['te','తెలుగు'],['mr','मराठी'],['ta','தமிழ்'],['ur','اردو'],['gu','ગુજરાતી'],['kn','ಕನ್ನಡ'],['ml','മലയാളം'],['or','ଓଡ଼ିଆ'],['pa','ਪੰਜਾਬੀ'],['as','অসমীয়া'],['ne','नेपाली'],['kok','कोंकणी'],['mai','मैथिली'],['doi','डोगरी'],['mni-Mtei','Meitei / Manipuri'],['lus','Mizo'],['bho','भोजपुरी'],['sa','संस्कृतम्'],['sd','سنڌي']];
+const THEMES=[['indigo','#6366f1'],['emerald','#10b981'],['orange','#f97316'],['pink','#ec4899'],['sky','#0ea5e9']];
+/* language + colour theme */
+document.querySelectorAll('.tools').forEach(el=>{el.innerHTML='<select class="langSel notranslate" translate="no" title="Language">'+LANGS.map(([c,n])=>`<option value="${c}">${n}</option>`).join('')+'</select>'+THEMES.map(([t,c])=>`<button class="dot" data-t="${t}" style="background:${c}" title="${t}"></button>`).join('')});
+function setTheme(t){document.documentElement.dataset.t=t;localStorage.setItem('jth',t)}
+function setLang(c){const past='expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+ document.cookie=c==='en'?'googtrans=;'+past:'googtrans=/en/'+c+';path=/';localStorage.setItem('jl',c);location.reload()}
+setTheme(localStorage.getItem('jth')||'indigo');
+document.querySelectorAll('.dot').forEach(b=>b.onclick=()=>setTheme(b.dataset.t));
+const jl=localStorage.getItem('jl')||'en';
+document.querySelectorAll('.langSel').forEach(s=>{s.value=jl;s.onchange=()=>setLang(s.value)});
+if(jl!=='en'){window.gteInit=()=>new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:LANGS.slice(1).map(x=>x[0]).join(','),autoDisplay:false},'gte');
+ const s=document.createElement('script');s.src='https://translate.google.com/translate_a/element.js?cb=gteInit';document.head.appendChild(s)}
+/* app */
+const A={
+ create_study_plan:[["topic","Topic","text","p"],["days","Days","number","p",7],["hours_per_day","Hours per day","number","p",2]],
+ summarize_notes:[["notes","Paste your notes","textarea","m"],["document_id","Or an uploaded document (optional)","docopt","p"]],
+ generate_quiz:[["notes","Paste notes","textarea","m"],["document_id","Or an uploaded document (optional)","docopt","p"],["count","Questions","number","p",5]],
+ analyze_resume:[["resume","Paste resume text","textarea","m"],["document_id","Or an uploaded resume (optional)","docopt","p"]],
+ skill_gap:[["target_role","Target role","role","p"],["resume","Paste resume text","textarea","p"],["document_id","Or an uploaded resume (optional)","docopt","p"]],
+ career_roadmap:[["target_role","Target role","text","p"],["months","Months","number","p",6]],
+ summarize_document:[["document_id","Document","doc","p"]],
+ extract_dates:[["document_id","Document","doc","p"]],
+ ask_document:[["document_id","Document","doc","p"],["question","Your question","textarea","m"]],
+ track_product:[["url","Product URL","text","p"],["name","Name (optional)","text","p"],["target_price","Target price","number","p"]],
+ check_price:[["product_id","Product ID","number","p"]],
+ set_price_alert:[["product_id","Product ID","number","p"],["target_price","Target price","number","p"]],
+ purchase:[]};
+let agents={},docs=[],timer=null,ME=null,META={states:[],occupations:[]};
+function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,3500)}
+async function api(path,o={}){
+ const h={},tok=localStorage.getItem('jt');if(tok&&!o.noAuth)h['Authorization']='Bearer '+tok;
+ let body;if(o.json){h['Content-Type']='application/json';body=JSON.stringify(o.json)}if(o.form)body=o.form;
+ const r=await fetch(path,{method:o.method||'GET',headers:h,body});let d=null;try{d=await r.json()}catch{}
+ if(!r.ok){if(r.status===401&&!o.noAuth){logout();throw new Error('Please log in again')}
+  let m=d?.detail;if(Array.isArray(m))m=m.map(x=>x.msg).join('; ');throw new Error(typeof m==='string'?m:r.statusText)}return d}
+function when(s){return s?new Date(s).toLocaleString():''}
+let mode='login';
+function setMode(m){mode=m;document.querySelectorAll('.regOnly').forEach(e=>e.hidden=m!=='register');$('#aGo').textContent=m==='login'?'Login':'Create account';$('#aErr').textContent='';$('#aPass').autocomplete=m==='login'?'current-password':'new-password'}
+$('#tLogin').onclick=()=>setMode('login');$('#tReg').onclick=()=>setMode('register');
+$('#aGo').onclick=async()=>{
+ const b={email:$('#aEmail').value,password:$('#aPass').value};
+ if(mode==='register'){Object.assign(b,{name:$('#aName').value,phone:$('#aPhone').value,state:$('#aState').value,city:$('#aCity').value,occupation:$('#aOcc').value,dob:$('#aDob').value});
+  if(!b.name||!b.phone||!b.state||!b.city||!b.occupation||!b.dob){$('#aErr').textContent='Please fill all the details';return}
+  if(!$('#aTerms').checked){$('#aErr').textContent='Please tick the confirmation box';return}}
+ $('#aGo').disabled=true;$('#aErr').textContent='';
+ try{const r=await api('/api/auth/'+mode,{method:'POST',json:b,noAuth:true});localStorage.setItem('jt',r.access_token);
+  if(mode==='register'&&!localStorage.getItem('jl')){const l=(META.states.find(s=>s.name===b.state)||{}).lang;if(l&&l!=='en'){setLang(l);return}}
+  await start(r.user)}
+ catch(e){$('#aErr').textContent=e.message}$('#aGo').disabled=false};
+$('#auth').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.target.matches('button,select,textarea')){e.preventDefault();$('#aGo').click()}});
+function hidePw(){$('#aPass').type='password';$('#eye').innerHTML='&#128065;'}
+$('#eye').onclick=()=>{const show=$('#aPass').type==='password';$('#aPass').type=show?'text':'password';$('#eye').innerHTML=show?'&#128584;':'&#128065;'};
+function logout(){localStorage.removeItem('jt');clearInterval(timer);$('#app').hidden=true;$('#auth').hidden=false;$('#aPass').value='';hidePw()}
+$('#logout').onclick=logout;
+async function start(user){
+ ME=user;$('#auth').hidden=true;$('#app').hidden=false;paintMe();buildNav();
+ agents=await api('/api/agents');
+ $('#agent').innerHTML=Object.entries(agents).map(([k,v])=>`<option value="${k}">${ICON[k]||''} ${esc(v.name)}</option>`).join('');
+ $('#agent').onchange=actions;$('#action').onchange=fields;await loadDocs();actions();pollN();
+ clearInterval(timer);timer=setInterval(pollN,60000);goTab('run')}
+function show(r,el){
+ const d=r.data||{};let h=`<span class="badge ${esc(r.status||'')}">${esc(r.status||'ok')}</span> `;
+ if(r.mode)h+=`<span class="badge">${esc(r.mode)}</span>`;
+ if(r.message)h+=`<p>${esc(r.message)}</p>`;if(r.response)h+=`<p class="resp">${esc(r.response)}</p>`;
+ if(d.plan)h+=d.plan.map(p=>`<div class="card"><b>Day ${p.day}</b> - ${esc(p.goal)}<ul>${p.tasks.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`).join('');
+ else if(d.quiz)h+=d.quiz.map((q,i)=>`<div class="card"><b>${i+1}. ${esc(q.question)}</b>${Array.isArray(q.options)?'<ul>'+q.options.map(o=>`<li>${esc(o)}</li>`).join('')+'</ul>':''}<details><summary>Answer</summary>${esc(q.answer)}${q.explanation?'<br>'+esc(q.explanation):''}</details></div>`).join('');
+ else if(Object.keys(d).length)h+=`<pre>${esc(JSON.stringify(d,null,2))}</pre>`;
+ if(r.approval_id)h+=`<p>Approval #${r.approval_id} created. Open the Approvals tab to approve it.</p>`;
+ el.hidden=false;el.innerHTML=h}
+function fail(el,e){el.hidden=false;el.innerHTML=`<p class="err">${esc(e.message)}</p>`}
+function fields(){
+ const a=$('#action').value,box=$('#fields');box.innerHTML='';
+ $('#adesc').textContent=agents[$('#agent').value]?.description||'';
+ const opts=docs.map(x=>`<option value="${x.id}">#${x.id} ${esc(x.filename)}</option>`).join('');
+ (A[a]||[]).forEach(([k,l,t,w,d])=>{let i;
+  if(t==='textarea')i=`<textarea id="f_${k}" rows="6"></textarea>`;
+  else if(t==='role')i=`<select id="f_${k}">${ROLES.map(r=>`<option>${r}</option>`).join('')}</select>`;
+  else if(t==='doc')i=`<select id="f_${k}">${opts||'<option value="">Upload a document first (Documents tab)</option>'}</select>`;
+  else if(t==='docopt')i=`<select id="f_${k}"><option value="">- none -</option>${opts}</select>`;
+  else i=`<input id="f_${k}" type="${t}" value="${d??''}">`;
+  box.insertAdjacentHTML('beforeend',`<label>${l}${i}</label>`)});
+ if(!(A[a]||[]).length)box.innerHTML='<p class="mu">No input needed.</p>'}
+function actions(){const ag=$('#agent').value;document.documentElement.style.setProperty('--ag',AGC[ag]||'');
+ $('#action').innerHTML=agents[ag].actions.map(x=>`<option value="${x}">${x.replace(/_/g,' ')}</option>`).join('');fields()}
+async function runAgent(agent,action,message,payload){return api('/api/agent/run',{method:'POST',json:{agent,action,message,payload}})}
+$('#go').onclick=async()=>{
+ const payload={};let message='';
+ for(const [k,,t,w] of A[$('#action').value]||[]){let v=$('#f_'+k).value;if(v==='')continue;if(['number','doc','docopt'].includes(t))v=Number(v);if(w==='m')message=v;else payload[k]=v}
+ $('#go').disabled=true;$('#go').textContent='Running...';
+ try{show(await runAgent($('#agent').value,$('#action').value,message,payload),$('#out'))}catch(e){fail($('#out'),e)}
+ $('#go').disabled=false;$('#go').textContent='Run'};
+let TABS={};
+const IC={"run": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M10 8.5l5.5 3.5-5.5 3.5z\"/>", "approvals": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M8.5 12.5l2.5 2.5 4.5-5\"/>", "perms": "<rect x=\"5\" y=\"11\" width=\"14\" height=\"9\" rx=\"2\"/><path d=\"M8 11V8a4 4 0 018 0v3\"/>", "activity": "<path d=\"M3 12h4l3-8 4 16 3-8h4\"/>", "docs": "<path d=\"M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z\"/><path d=\"M14 3v5h5M9 13h6M9 17h6\"/>", "products": "<path d=\"M6 7h12l-1 13H7z\"/><path d=\"M9 7a3 3 0 016 0\"/>", "alerts": "<path d=\"M6 16v-5a6 6 0 0112 0v5l2 2H4z\"/><path d=\"M10 21h4\"/>", "profile": "<circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21c0-4 4-6 8-6s8 2 8 6\"/>", "admin": "<path d=\"M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z\"/><path d=\"M9 12l2 2 4-4\"/>"};
+const GROUP={run:'Menu',profile:'Account',admin:'Administration'};
+function buildNav(){TABS={run:['Run agent',async()=>{}],approvals:['Approvals',loadApprovals],perms:['Permissions',loadPerms],activity:['Activity',loadActivity],docs:['Documents',loadDocs],products:['Products',loadProducts],alerts:['Alerts',loadAlerts],profile:['My profile',loadProfile]};
+ if(ME&&ME.role==='admin')TABS.admin=['Admin',loadAdmin];
+ $('#nav').innerHTML=Object.entries(TABS).map(([k,[n]])=>(GROUP[k]?`<div class="nl">${GROUP[k]}</div>`:'')+`<button data-t="${k}"><svg class="ic" viewBox="0 0 24 24">${IC[k]||''}</svg><span>${n}</span></button>`).join('')}
+function goTab(t){document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===t));
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));$('#pageTitle').textContent=TABS[t][0];document.body.classList.remove('menu');window.scrollTo(0,0);TABS[t][1]().catch(e=>toast(e.message))}
+$('#nav').onclick=e=>{const b=e.target.closest('button[data-t]');if(b)goTab(b.dataset.t)};
+$('#burger').onclick=()=>document.body.classList.toggle('menu');$('#scrim').onclick=()=>document.body.classList.remove('menu');
+$('#bell').onclick=()=>goTab('alerts');
+async function loadApprovals(){
+ const l=await api('/api/approvals');
+ $('#apList').innerHTML=l.length?l.map(a=>`<div class="card"><b>${esc(a.agent)} / ${esc(a.action)}</b> <span class="badge pending">pending</span><p class="mu">${esc(a.message)||esc(JSON.stringify(a.payload))}</p><button class="sm" onclick="decide(${a.id},'approve')">Approve</button> <button class="sm" onclick="decide(${a.id},'reject')">Reject</button></div>`).join(''):'<p class="mu">No pending approvals.</p>'}
+async function decide(id,w){try{show(await api(`/api/approvals/${id}/${w}`,{method:'POST'}),$('#apOut'))}catch(e){fail($('#apOut'),e)}loadApprovals()}
+function permTable(l){$('#pList').innerHTML='<table><tr><th>Agent</th><th>Action</th><th>Permission</th></tr>'+l.map(p=>`<tr><td>${ICON[p.agent]||''} ${esc(p.agent)}</td><td>${esc(p.action)}</td><td><select onchange="setPerm('${esc(p.agent)}','${esc(p.action)}',this.value)">${['ALLOW','ASK','BLOCK'].map(v=>`<option${v===p.permission?' selected':''}>${v}</option>`).join('')}</select></td></tr>`).join('')+'</table>'}
+async function loadPerms(){permTable(await api('/api/permissions'))}
+async function setPerm(agent,action,permission){try{await api('/api/permissions',{method:'POST',json:{agent,action,permission}});toast('Saved')}catch(e){toast(e.message)}}
+$('#resetP').onclick=async()=>{try{permTable(await api('/api/permissions/reset',{method:'POST'}));toast('Defaults restored')}catch(e){toast(e.message)}};
+async function loadActivity(){
+ const l=await api('/api/activity');
+ $('#acList').innerHTML=l.length?'<table><tr><th>Time</th><th>Agent</th><th>Action</th><th>Status</th></tr>'+l.map(r=>`<tr><td>${esc(when(r.created_at))}</td><td>${esc(r.agent)}</td><td>${esc(r.action)}</td><td><span class="badge ${esc(r.status)}">${esc(r.status)}</span></td></tr>`).join('')+'</table>':'<p class="mu">Nothing yet.</p>'}
+async function loadDocs(){
+ docs=await api('/api/documents');
+ $('#dList').innerHTML=docs.length?'<table>'+docs.map(d=>`<tr><td>#${d.id}</td><td>${esc(d.filename)}</td><td class="mu">${d.characters} chars</td><td><button class="sm" onclick="delDoc(${d.id})">Delete</button></td></tr>`).join('')+'</table>':'<p class="mu">No documents yet.</p>';fields()}
+async function delDoc(id){try{await api('/api/documents/'+id,{method:'DELETE'});loadDocs()}catch(e){toast(e.message)}}
+$('#up').onclick=async()=>{const f=$('#file').files[0];$('#upErr').textContent='';if(!f)return;
+ const fd=new FormData();fd.append('file',f);try{await api('/api/documents',{method:'POST',form:fd});$('#file').value='';await loadDocs();toast('Uploaded')}catch(e){$('#upErr').textContent=e.message}};
+function spark(h){if(h.length<2)return '';const v=h.map(x=>x.price),mn=Math.min(...v),mx=Math.max(...v),w=100,hh=24;
+ const pts=v.map((p,i)=>`${(i/(v.length-1))*w},${hh-(mx===mn?hh/2:((p-mn)/(mx-mn))*(hh-4)+2)}`).join(' ');
+ return `<svg width="100" height="24"><polyline fill="none" stroke="currentColor" stroke-width="1.5" points="${pts}"/></svg>`}
+async function loadProducts(){
+ const l=await api('/api/products');
+ $('#prList').innerHTML=l.length?'<table><tr><th>Product</th><th>Price</th><th>Target</th><th>Trend</th><th></th></tr>'+l.map(p=>`<tr><td>#${p.id} ${esc(p.name||p.url.slice(0,40))}<div class="mu">${p.last_checked?'checked '+esc(when(p.last_checked)):'not checked yet'}</div></td><td>${p.last_price??'-'} ${esc(p.currency)}</td><td>${p.target_price??'-'}</td><td>${spark(p.history)}</td><td><button class="sm" onclick="checkP(${p.id})">Check now</button> <button class="sm" onclick="delP(${p.id})">Delete</button></td></tr>`).join('')+'</table>':'<p class="mu">No products tracked yet.</p>'}
+async function checkP(id){try{const r=await runAgent('shopping','check_price','',{product_id:id});toast(r.response||r.message||r.status);loadProducts();pollN()}catch(e){toast(e.message)}}
+async function delP(id){try{await api('/api/products/'+id,{method:'DELETE'});loadProducts()}catch(e){toast(e.message)}}
+$('#pAdd').onclick=async()=>{const p={url:$('#pUrl').value.trim()};if($('#pName').value)p.name=$('#pName').value;if($('#pTarget').value)p.target_price=Number($('#pTarget').value);
+ $('#pMsg').textContent='';try{const r=await runAgent('shopping','track_product','',p);$('#pMsg').textContent=r.response||r.message;loadProducts()}catch(e){$('#pMsg').textContent=e.message}};
+async function pollN(){try{const r=await api('/api/notifications');$('#nb').textContent=r.unread}catch{}}
+async function loadAlerts(){
+ const r=await api('/api/notifications');$('#nb').textContent=r.unread;
+ $('#nList').innerHTML=r.items.length?r.items.map(n=>`<div style="padding:8px 0;border-bottom:1px solid var(--bd);${n.read?'opacity:.6':''}"><b>${esc(n.title)}</b><div>${esc(n.body)}</div><div class="mu">${esc(when(n.created_at))}</div></div>`).join(''):'<p class="mu">No alerts yet.</p>'}
+$('#readAll').onclick=async()=>{try{await api('/api/notifications/read-all',{method:'POST'});loadAlerts()}catch(e){toast(e.message)}};
+/* profile + admin */
+const ini=n=>(String(n||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('')||'?').toUpperCase();
+function fillSel(id,items,ph){const el=$(id);el.innerHTML=(ph?`<option value="">${ph}</option>`:'')+items.map(x=>`<option>${esc(x)}</option>`).join('')}
+const FALLBACK_META={states:[
+ ["Andhra Pradesh","te"],["Arunachal Pradesh","hi"],["Assam","as"],
+ ["Bihar","hi"],["Chhattisgarh","hi"],["Goa","kok"],
+ ["Gujarat","gu"],["Haryana","hi"],["Himachal Pradesh","hi"],
+ ["Jharkhand","hi"],["Karnataka","kn"],["Kerala","ml"],
+ ["Madhya Pradesh","hi"],["Maharashtra","mr"],["Manipur","mni-Mtei"],
+ ["Meghalaya","en"],["Mizoram","lus"],["Nagaland","en"],
+ ["Odisha","or"],["Punjab","pa"],["Rajasthan","hi"],
+ ["Sikkim","ne"],["Tamil Nadu","ta"],["Telangana","te"],
+ ["Tripura","bn"],["Uttar Pradesh","hi"],["Uttarakhand","hi"],
+ ["West Bengal","bn"],["Andaman and Nicobar Islands","hi"],["Chandigarh","pa"],
+ ["Dadra and Nagar Haveli and Daman and Diu","gu"],["Delhi","hi"],["Jammu and Kashmir","ur"],
+ ["Ladakh","hi"],["Lakshadweep","ml"],["Puducherry","ta"]
+ ].map(([name,lang])=>({name,lang})),
+ occupations:["Student", "Job seeker", "Working professional", "Business owner", "Teacher / Educator", "Other"]};
+async function loadMeta(){try{META=await api('/api/auth/meta',{noAuth:true})}catch{META=FALLBACK_META}
+ const st=META.states.map(s=>s.name);fillSel('#aState',st,'Select state / UT');fillSel('#aOcc',META.occupations,'Select');fillSel('#prState',st,'');fillSel('#prOcc',META.occupations,'');
+ const d=new Date();d.setFullYear(d.getFullYear()-13);$('#aDob').max=$('#prDob').max=d.toISOString().slice(0,10)}
+function paintMe(){$('#who').textContent=ME.name||ME.email;$('#av').textContent=ini(ME.name||ME.email);$('#roleB').hidden=ME.role!=='admin';$('#cpBanner').hidden=!!ME.profile_complete}
+$('#meBtn').onclick=()=>goTab('profile');$('#cpGo').onclick=()=>goTab('profile');
+async function loadProfile(){ME=await api('/api/auth/me');paintMe();
+ const lang=(META.states.find(s=>s.name===ME.state)||{}).lang,ln=(LANGS.find(l=>l[0]===lang)||[])[1];
+ $('#pHead').innerHTML=`<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><span class="avatar big">${esc(ini(ME.name))}</span><div><b style="font-size:18px">${esc(ME.name)}</b> <span class="badge ${ME.role==='admin'?'admin':''}">${ME.role==='admin'?'Admin':'User'}</span><div class="mu">${esc(ME.email)}</div><div class="mu">Member since ${esc(when(ME.created_at).split(',')[0])}${ln?' &middot; Your state language: '+esc(ln):''}</div></div></div>`;
+ $('#prName').value=ME.name||'';$('#prPhone').value=ME.phone||'';$('#prState').value=ME.state||'';$('#prCity').value=ME.city||'';$('#prOcc').value=ME.occupation||'';$('#prDob').value=ME.dob||'';$('#prMsg').textContent=''}
+$('#prSave').onclick=async()=>{$('#prMsg').textContent='';try{ME=await api('/api/auth/me',{method:'PUT',json:{name:$('#prName').value,phone:$('#prPhone').value,state:$('#prState').value,city:$('#prCity').value,occupation:$('#prOcc').value,dob:$('#prDob').value}});paintMe();toast('Profile saved');loadProfile()}catch(e){$('#prMsg').textContent=e.message}};
+$('#cpSave').onclick=async()=>{$('#cpMsg').textContent='';try{await api('/api/auth/change-password',{method:'POST',json:{old_password:$('#cpOld').value,new_password:$('#cpNew').value}});$('#cpOld').value=$('#cpNew').value='';toast('Password changed')}catch(e){$('#cpMsg').textContent=e.message}};
+async function loadAdmin(){
+ const [s,u]=await Promise.all([api('/api/admin/stats'),api('/api/admin/users')]);
+ const cards=[['Users',s.users,'#6366f1'],['Active',s.active_users,'#10b981'],['Admins',s.admins,'#ec4899'],['Agent runs',s.agent_runs,'#f59e0b'],['Documents',s.documents,'#0ea5e9'],['Products',s.products,'#8b5cf6'],['Pending approvals',s.pending_approvals,'#d97706']];
+ $('#aStats').innerHTML=cards.map(([n,v,c])=>`<div class="stat" style="--c:${c}"><b>${v}</b><span class="mu">${n}</span></div>`).join('');
+ $('#aStates').innerHTML='<b>Users by state</b>'+(s.by_state.length?'<table>'+s.by_state.map(x=>`<tr><td>${esc(x.state)}</td><td>${x.count}</td></tr>`).join('')+'</table>':'<p class="mu">No data</p>');
+ const cat={};u.forEach(x=>{const k=x.occupation||'Not set';cat[k]=(cat[k]||0)+1});
+ const catRows=Object.entries(cat).sort((a,b)=>b[1]-a[1]);
+ $('#aCats').innerHTML='<b>Users by category</b>'+(catRows.length?'<table>'+catRows.map(([k,n])=>`<tr><td>${esc(k)}</td><td>${n}</td></tr>`).join('')+'</table>':'<p class="mu">No data</p>');
+ $('#aUsers').innerHTML='<b>All users</b><table><tr><th>User</th><th>Mobile</th><th>State / City</th><th>Category</th><th>Role</th><th>Last login</th><th></th></tr>'+u.map(x=>`<tr><td>${esc(x.name)}<div class="mu">${esc(x.email)}</div></td><td>${esc(x.phone||'-')}</td><td>${esc(x.state||'-')}<div class="mu">${esc(x.city||'')}</div></td><td>${esc(x.occupation||'-')}</td><td><span class="badge ${x.role==='admin'?'admin':''}">${esc(x.role)}</span>${x.is_active?'':' <span class="badge blocked">disabled</span>'}</td><td class="mu">${esc(when(x.last_login)||'-')}</td><td>${x.id===ME.id?'<span class="mu">you</span>':`<button class="sm" onclick="adm(${x.id},'active',${!x.is_active})">${x.is_active?'Disable':'Enable'}</button> <button class="sm" onclick="adm(${x.id},'role','${x.role==='admin'?'user':'admin'}')">${x.role==='admin'?'Remove admin':'Make admin'}</button>`}</td></tr>`).join('')+'</table>'}
+async function adm(id,what,val){try{await api(`/api/admin/users/${id}/${what}`,{method:'POST',json:what==='active'?{active:val}:{role:val}});loadAdmin()}catch(e){toast(e.message)}}
+(async()=>{await loadMeta();if(!localStorage.getItem('jt'))return;try{await start(await api('/api/auth/me'))}catch{logout()}})();
+</script></body></html>
+

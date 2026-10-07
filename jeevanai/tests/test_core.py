@@ -1,0 +1,98 @@
+"""Pure-logic tests (no database / web server needed). Run: pytest"""
+import time
+from types import SimpleNamespace
+from datetime import date
+
+from app.core import tokens
+from app.agents.textutils import extractive_summary, top_chunks
+from app.agents.dates import find_dates, to_iso
+from app.agents.pricing import parse_price, is_safe_url
+from app.agents import career, study
+
+
+def ctx(message="", **payload):
+    return SimpleNamespace(message=message, payload=payload, db=None, user_id=1)
+
+
+def test_password_hash_roundtrip():
+    h = tokens.hash_password("secret123")
+    assert tokens.verify_password("secret123", h)
+    assert not tokens.verify_password("wrong", h)
+    assert not tokens.verify_password("x", "garbage")
+
+
+def test_jwt_roundtrip_and_tamper():
+    t = tokens.create_token(42)
+    assert tokens.decode_token(t) == 42
+    assert tokens.decode_token(t[:-2] + "xx") is None
+    assert tokens.decode_token("a.b.c") is None
+    assert tokens.decode_token("") is None
+
+
+def test_jwt_expiry(monkeypatch=None):
+    old = tokens.settings.jwt_expire_minutes
+    tokens.settings.jwt_expire_minutes = -1
+    try:
+        assert tokens.decode_token(tokens.create_token(1)) is None
+    finally:
+        tokens.settings.jwt_expire_minutes = old
+
+
+def test_dates_extracted_and_sorted():
+    text = "Exam on 15 March 2026. Submit by 2026-04-01 or 03/05/2026."
+    d = find_dates(text, today=date(2026, 3, 20))
+    assert [x["iso"] for x in d] == ["2026-03-15", "2026-04-01", "2026-05-03"]
+    assert d[0]["upcoming"] is False and d[1]["upcoming"] is True
+    assert to_iso("Sept 5th, 2026") == "2026-09-05"
+
+
+def test_parse_price_variants():
+    ld = '<script type="application/ld+json">{"offers":{"price":"1,499.00","priceCurrency":"INR"}}</script>'
+    assert parse_price(ld) == (1499.0, "INR")
+    meta = '<meta property="product:price:amount" content="249.5"><meta property="product:price:currency" content="USD">'
+    assert parse_price(meta) == (249.5, "USD")
+    assert parse_price("<html>nothing</html>") is None
+
+
+def test_ssrf_blocked():
+    assert not is_safe_url("http://127.0.0.1/admin")
+    assert not is_safe_url("http://localhost:8000")
+    assert not is_safe_url("file:///etc/passwd")
+    assert not is_safe_url("ftp://example.com")
+
+
+def test_bm25_finds_relevant_chunk():
+    filler = "Photosynthesis happens in plants using sunlight and water. " * 30
+    target = "The final exam registration deadline is strictly enforced by the office. "
+    chunks = top_chunks(filler + target + filler, "when is the registration deadline", k=1)
+    assert chunks and "registration deadline" in chunks[0]
+
+
+def test_summary_shorter_than_input():
+    text = " ".join(f"Sentence number {i} talks about databases and indexing performance." for i in range(20))
+    assert len(extractive_summary(text, 3)) < len(text)
+
+
+def test_resume_and_skill_gap():
+    resume = ("Education: B.Tech. Experience: 2 years. Projects: built REST API with Python, SQL, Docker, Git. "
+              "Skills: Python, SQL, Docker, Git, Linux. Email: a@b.com. GitHub: github.com/x. Improved speed by 40%.")
+    r = career.analyze_resume(ctx(resume))
+    assert r["data"]["ats_score"] > 40 and "python" in r["data"]["skills_found"]
+    g = career.skill_gap(ctx(target_role="backend developer", resume=resume))
+    assert g["data"]["match_percent"] >= 50 and "fastapi" in g["data"]["missing"]
+    try:
+        career.skill_gap(ctx(target_role="astronaut", resume=resume))
+        assert False
+    except ValueError:
+        pass
+
+
+def test_roadmap_and_study_offline():
+    r = career.career_roadmap(ctx(target_role="data analyst", months=3))
+    assert len(r["data"]["roadmap"]) == 3
+    p = study.create_study_plan(ctx(topic="Python", days=5))
+    assert len(p["data"]["plan"]) == 5
+    q = study.generate_quiz(ctx("Python is a high level programming language used for scripting and automation. "
+                                "Databases store structured information using tables and relations. "
+                                "Networks connect computers using protocols like TCP and IP."))
+    assert q["data"]["quiz"] and all("question" in x for x in q["data"]["quiz"])

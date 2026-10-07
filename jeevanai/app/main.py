@@ -1,0 +1,85 @@
+import asyncio
+import contextlib
+import logging
+from contextlib import asynccontextmanager
+from pathlib import Path
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from app.core.config import settings
+from app.core.llm import llm_available
+from app.core.scheduler import price_loop
+from app.db.database import Base, SessionLocal, engine
+from app.db.migrate import migrate_legacy, migrate_users
+from app.db import models  # noqa: F401  (registers tables)
+from app.db.models import User
+from app.routers import admin, agents, auth, documents, notifications, permissions, products
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+VERSION = "1.1.0"
+INDEX = Path(__file__).parent / "static" / "index.html"
+
+
+def promote_admins():
+    """Users whose email is listed in ADMIN_EMAIL become admins at startup."""
+    if not settings.admin_emails:
+        return
+    db = SessionLocal()
+    try:
+        for u in db.query(User).filter(User.email.in_(list(settings.admin_emails))).all():
+            if u.role != "admin":
+                u.role = "admin"
+        db.commit()
+    finally:
+        db.close()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    migrate_legacy()
+    Base.metadata.create_all(bind=engine)
+    migrate_users()
+    promote_admins()
+    task = None
+    if settings.price_check_minutes > 0:
+        task = asyncio.create_task(price_loop(settings.price_check_minutes))
+    yield
+    if task:
+        task.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            await task
+
+
+app = FastAPI(title="JeevanAI API", version=VERSION, lifespan=lifespan)
+app.add_middleware(CORSMiddleware, allow_origins=settings.cors_origins, allow_credentials=True,
+                   allow_methods=["*"], allow_headers=["*"])
+
+
+@app.middleware("http")
+async def security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    response.headers.setdefault("Referrer-Policy", "no-referrer")
+    return response
+
+
+for r in (auth.router, agents.router, permissions.router, documents.router, notifications.router, products.router, admin.router):
+    app.include_router(r)
+
+
+@app.get("/", include_in_schema=False)
+@app.get("/ui", include_in_schema=False)
+def ui():
+    return FileResponse(INDEX, media_type="text/html", headers={"Cache-Control": "no-cache"})
+
+
+@app.get("/api/status")
+def status():
+    return {"project": "JeevanAI", "version": VERSION, "status": "running",
+            "llm": "enabled" if llm_available() else "offline-mode"}
+
+
+@app.get("/health")
+def health():
+    return {"ok": True}
